@@ -1,0 +1,39 @@
+# example values
+spring:
+  datasource:
+    jdbc-url: jdbc:mysql://localhost:3306/search_engine?useUnicode=true&characterEncoding=UTF-8&useSSL=false&jdbcCompliantTruncation=false&zeroDateTimeBehavior=convertToNull&useAffectedRows=true&&autoReconnect=true
+    username: root
+    password: testtest
+    driverClassName: com.mysql.cj.jdbc.Driver
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: update
+    generate-ddl: true
+    show-sql: true
+hibernate:
+  jdbc:
+    batch_size: 50
+  order_inserts: true
+  order_updates: true
+
+indexing-settings:
+  sites:
+    - url: https://volochek.life/
+      name: Volochek.life
+    - url: https://dimonvideo.ru/
+      name: DimonVideo.ru
+
+server:
+  address: 0.0.0.0
+  port: 8080
+  compression:
+    enabled: true
+    mime-types: application/javascript, text/css, text/javascript
+  servlet:
+    session:
+      cookie:
+        http-only: true
+

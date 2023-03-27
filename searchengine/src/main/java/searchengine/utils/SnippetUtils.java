@@ -1,7 +1,7 @@
 package searchengine.utils;
 
 import org.jsoup.nodes.Document;
-import searchengine.services.SearchService;
+import searchengine.service.impl.SearchServiceImpl;
 
 import java.util.*;
 
@@ -9,7 +9,7 @@ public class SnippetUtils {
 
     private static final int WORDS_COUNT = 5;
     private static final String ELLIPSIS = "...";
-    SearchService searchService = new SearchService();
+    SearchServiceImpl searchServiceImpl = new SearchServiceImpl();
 
     public static String generateSnippet(Document document, Set<String> sourceLemmas) {
         StringJoiner joiner = new StringJoiner(" ");

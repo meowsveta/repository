@@ -7,46 +7,46 @@ import org.springframework.web.bind.annotation.*;
 import searchengine.dto.ApiResponse;
 import searchengine.dto.statistics.StatisticsResponse;
 import searchengine.model.SearchFilter;
-import searchengine.services.IndexingService;
-import searchengine.services.SearchService;
-import searchengine.services.StatisticsService;
+import searchengine.service.impl.IndexingServiceImpl;
+import searchengine.service.impl.SearchServiceImpl;
+import searchengine.service.impl.StatisticsServiceImpl;
 
 @RestController
 @RequestMapping("/api/")
 public class ApiController extends CommonController {
 
     @Autowired
-    private StatisticsService statisticsService;
+    private StatisticsServiceImpl statisticsServiceImpl;
     @Autowired
-    private IndexingService indexingService;
+    private IndexingServiceImpl indexingServiceImpl;
     @Autowired
-    private SearchService searchService;
+    private SearchServiceImpl searchServiceImpl;
 
     @GetMapping("/statistics")
     public StatisticsResponse statistics() {
-        return statisticsService.getStatistics();
+        return statisticsServiceImpl.getStatistics();
     }
 
     @GetMapping("/startIndexing")
     public ResponseEntity<?> startIndexing() {
-        indexingService.startIndexing();
+        indexingServiceImpl.startIndexing();
         return okResponse();
     }
 
     @GetMapping("/stopIndexing")
     public ResponseEntity<?> stopIndexing() {
-        indexingService.stopIndexing();
+        indexingServiceImpl.stopIndexing();
         return okResponse();
     }
 
     @PostMapping("/indexPage")
     public ResponseEntity<?> indexPage(@RequestParam String url) {
-        indexingService.indexPage(url);
+        indexingServiceImpl.indexPage(url);
         return okResponse();
     }
 
     @GetMapping("/search")
     public ResponseEntity<ApiResponse> search(SearchFilter filter) {
-        return new ResponseEntity<>(searchService.search(filter), HttpStatus.OK);
+        return new ResponseEntity<>(searchServiceImpl.search(filter), HttpStatus.OK);
     }
 }

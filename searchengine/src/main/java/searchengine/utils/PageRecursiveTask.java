@@ -31,13 +31,13 @@ public class PageRecursiveTask extends RecursiveTask<Boolean> {
                              SiteRepository siteRepository,
                              PageRepository pageRepository,
                              LemmaRepository lemmaRepository,
-                             DBRepository DBRepository) {
+                             IndexRepository indexRepository) {
         this.site = site;
         this.url = url;
         this.siteRepository = siteRepository;
         this.pageRepository = pageRepository;
         this.lemmaRepository = lemmaRepository;
-        this.DBRepository = DBRepository;
+        this.indexRepository = indexRepository;
     }
 
     private final Site site;
@@ -45,8 +45,7 @@ public class PageRecursiveTask extends RecursiveTask<Boolean> {
     private final SiteRepository siteRepository;
     private final PageRepository pageRepository;
     private final LemmaRepository lemmaRepository;
-    private final DBRepository DBRepository;
-    private IndexRepository indexRepository;
+    private final IndexRepository indexRepository;
     private boolean isFirst = true;
     private String firstUrl;
 
@@ -67,16 +66,16 @@ public class PageRecursiveTask extends RecursiveTask<Boolean> {
             }
             if (isFirst) {
                 pageRepository.insert(
-                    site.getId(), formatUrl,
-                    response.statusCode(), document.html()
+                        site.getId(), formatUrl,
+                        response.statusCode(), document.html()
                 );
                 isFirst = false;
             } else {
                 int update = pageRepository.update(
-                    response.statusCode(), document.html(), site.getId(), formatUrl
+                        response.statusCode(), document.html(), site.getId(), formatUrl
                 );
                 if (update < 1) {
-                    throw new RuntimeException("Страница не обновлена");
+                    throw new ErrorMessage("Страница не обновлена");
                 }
                 siteRepository.updateStatusTime(LocalDateTime.now(), site.getId());
             }
@@ -89,7 +88,7 @@ public class PageRecursiveTask extends RecursiveTask<Boolean> {
         } catch (Exception ex) {
             if (!runIndexing) {
                 siteRepository.updateFailedStatus(
-                    Status.FAILED.name(), ex.getMessage(), site.getId()
+                        Status.FAILED.name(), ex.getMessage(), site.getId()
                 );
             } else {
                 siteRepository.updateLastError(ex.getMessage(), site.getId());
@@ -113,10 +112,10 @@ public class PageRecursiveTask extends RecursiveTask<Boolean> {
                 }
                 if (runIndexing) {
                     PageRecursiveTask task = new PageRecursiveTask(
-                        site, absUrl, siteRepository,
+                            site, absUrl, siteRepository,
                             pageRepository, lemmaRepository,
-                            DBRepository, indexRepository,
-                        false, firstUrl
+                            indexRepository,
+                            false, firstUrl
                     );
                     tasks.add(task);
                     task.fork();
@@ -138,11 +137,11 @@ public class PageRecursiveTask extends RecursiveTask<Boolean> {
             }
             removePage(formatUrl);
             Page page = pageRepository.saveAndFlush(
-                new Page()
-                    .setSite(site)
-                    .setPath(formatUrl)
-                    .setCode(response.statusCode())
-                    .setContent(document.html())
+                    new Page()
+                            .setSite(site)
+                            .setPath(formatUrl)
+                            .setCode(response.statusCode())
+                            .setContent(document.html())
             );
             appendLemma(page, document);
             return "ok";
@@ -172,23 +171,24 @@ public class PageRecursiveTask extends RecursiveTask<Boolean> {
             List<Lemma> lemmas = new ArrayList<>();
             List<Index> indices = new ArrayList<>();
             lemmasRaw.forEach(
-                (lemma, count) ->
-                    lemmas.add(new Lemma(site, lemma, 1))
-            );
-            DBRepository.insertLemmaBatch(lemmas);
+                    (lemma, count) -> {
+                        lemmaRepository.insertLemma(site.getId(), lemma, count);
+                        lemmas.add(new Lemma(site, lemma, 1));
+                    } );
+
             List<Lemma> lemmaSaved = lemmaRepository.getByLemma(
-                site.getId(), lemmasRaw.keySet()
+                    site.getId(), lemmasRaw.keySet()
             );
             for (Lemma lemma : lemmaSaved) {
-                Integer count = lemmasRaw.get(lemma.getLemma());
+                Double count = Double.valueOf(lemmasRaw.get(lemma.getLemma()));
+                indexRepository.insertIndex(lemma.getId(), page.getId(), count);
                 if (count == null) {
                     continue;
                 }
                 indices.add(
-                    new Index(page, lemma, count)
+                        new Index(page, lemma, count)
                 );
             }
-            DBRepository.insertIndexBatch(indices);
         } catch (Exception ex) {
             throw new ErrorMessage("Ошибка лемматизации");
         }
@@ -212,18 +212,18 @@ public class PageRecursiveTask extends RecursiveTask<Boolean> {
         url = url.trim();
         if (isFirst) {
             firstUrl = url.endsWith(slash) ?
-                url.substring(0, url.length() - 1) : url;
+                    url.substring(0, url.length() - 1) : url;
             return "/";
         }
         if (firstUrl == null) {
             throw new ErrorMessage("Начальный URL не может быть пустым");
         }
         return url.startsWith(firstUrl) ?
-            url.substring(firstUrl.length()) : url;
+                url.substring(firstUrl.length()) : url;
     }
 
     private boolean isCorrectUrl(String url) {
         return (url.startsWith("/") || url.startsWith(this.url)) &&
-            !EXCESS_LINK.matcher(url).find();
+                !EXCESS_LINK.matcher(url).find();
     }
 }

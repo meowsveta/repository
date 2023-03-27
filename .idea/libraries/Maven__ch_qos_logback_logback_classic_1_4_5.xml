@@ -1,0 +1,21 @@
+<component name="libraryTable">
+  <library name="Maven: ch.qos.logback:logback-classic:1.4.5">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/ch/qos/logback/logback-classic/1.4.5/logback-classic-1.4.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../vlad177741/lib/lucene-core-8.11.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../vlad177741/lib/lucene-analyzers-common-8.11.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../vlad177741/lib/russian-1.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../vlad177741/lib/dictionary-reader-1.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../vlad177741/lib/morph-1.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../vlad177741/lib/morphology-1.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../vlad177741/lib/english-1.5.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/ch/qos/logback/logback-classic/1.4.5/logback-classic-1.4.5-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/ch/qos/logback/logback-classic/1.4.5/logback-classic-1.4.5-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../vlad177741/lib/lucene-core-8.11.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

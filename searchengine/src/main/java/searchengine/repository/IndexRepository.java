@@ -41,4 +41,11 @@ public interface IndexRepository extends JpaRepository<Index, Long> {
         nativeQuery = true
     )
     void deleteBySiteId(Long siteId);
+
+    @Modifying
+    @Query(value = "INSERT INTO `index` (lemma_id, page_id, index_rank) " +
+            "VALUES (?1, ?2, ?3) AS new(l, p, r) " +
+            "ON DUPLICATE KEY UPDATE index_rank = index_rank + new.r", nativeQuery = true)
+    void insertIndex(long lemmaId, long pageId, double rank);
 }
+

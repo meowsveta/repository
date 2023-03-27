@@ -49,4 +49,10 @@ public interface LemmaRepository extends JpaRepository<Lemma, Long> {
         nativeQuery = true
     )
     void deleteBySiteId(Long siteId);
+
+    @Modifying
+    @Query(value = "INSERT INTO lemma (site_id, lemma, frequency) " +
+            "VALUES (?1, ?2, ?3) AS new(s, l, f) " +
+            "ON DUPLICATE KEY UPDATE frequency = frequency + new.f ", nativeQuery = true)
+    void insertLemma(long siteId, String lemma, int frequency);
 }

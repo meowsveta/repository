@@ -64,21 +64,7 @@ public class PageRecursiveTask extends RecursiveTask<Boolean> {
             if (formatUrl.isBlank()) {
                 return runIndexing;
             }
-            if (isFirst) {
-                pageRepository.insert(
-                        site.getId(), formatUrl,
-                        response.statusCode(), document.html()
-                );
-                isFirst = false;
-            } else {
-                int update = pageRepository.update(
-                        response.statusCode(), document.html(), site.getId(), formatUrl
-                );
-                if (update < 1) {
-                    throw new ErrorMessage("Страница не обновлена");
-                }
-                siteRepository.updateStatusTime(LocalDateTime.now(), site.getId());
-            }
+            update(formatUrl, document, response);
             parseChildren(document);
             Page page = pageRepository.getByPath(formatUrl, site.getId());
             if (page == null) {
@@ -95,6 +81,25 @@ public class PageRecursiveTask extends RecursiveTask<Boolean> {
             }
         }
         return runIndexing;
+    }
+
+    public void update(String formatUrl, Document document, Connection.Response response ){
+        if (isFirst) {
+            pageRepository.insert(
+                    site.getId(), formatUrl,
+                    response.statusCode(), document.html()
+            );
+            isFirst = false;
+        } else {
+            int update = pageRepository.update(
+                    response.statusCode(), document.html(), site.getId(), formatUrl
+            );
+            if (update < 1) {
+                throw new ErrorMessage("Страница не обновлена");
+            }
+            siteRepository.updateStatusTime(LocalDateTime.now(), site.getId());
+        }
+
     }
 
     private void parseChildren(Document document) {

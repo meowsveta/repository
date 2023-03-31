@@ -42,8 +42,8 @@ public class SearchServiceImpl implements SearchService {
         HashMap<String, Integer> sourceLemmas = LemmaUtils.lemmatization(query, false);
         List<Lemma> existLemmas =
             site == null ?
-                lemmaRepository.getByLemma(sourceLemmas.keySet()) :
-                lemmaRepository.getByLemma(site.getId(), sourceLemmas.keySet());
+                lemmaRepository.findByLemmaInOrderByFrequency(sourceLemmas.keySet()) :
+                lemmaRepository.findByLemmaAndSiteIdInOrderByFrequency(site.getId(), sourceLemmas.keySet());
         List<Page> matchPages = searchPages(existLemmas);
         if (matchPages.isEmpty()) {
             return response;

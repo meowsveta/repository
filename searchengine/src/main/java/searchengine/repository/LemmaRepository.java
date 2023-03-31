@@ -14,19 +14,8 @@ import java.util.List;
 @Transactional
 public interface LemmaRepository extends JpaRepository<Lemma, Long> {
 
-//    @Query(
-//        value = "SELECT l FROM Lemma l " +
-//            "WHERE l.site.id = :siteId AND l.lemma IN (:lemmas) " +
-//            "ORDER BY l.frequency"
-//    )
-//    List<Lemma> getByLemma(Long siteId, Collection<String> lemmas);
-    List<Lemma> findByLemmaAndSiteIdInOrderByFrequency(Long siteId, Collection<String> lemmas);
 
-//    @Query(
-//        value = "SELECT l FROM Lemma l WHERE l.lemma IN (:lemmas) " +
-//            "ORDER BY l.frequency"
-//    )
-//    List<Lemma> getByLemma(Collection<String> lemmas);
+    List<Lemma> findAllBySiteIdAndLemmaInOrderByFrequency(Long siteId, Collection<String> lemmas);
 
     List<Lemma> findByLemmaInOrderByFrequency(Collection<String> lemmas);
 

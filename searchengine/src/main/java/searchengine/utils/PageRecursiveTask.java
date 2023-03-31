@@ -181,7 +181,7 @@ public class PageRecursiveTask extends RecursiveTask<Boolean> {
                         lemmas.add(new Lemma(site, lemma, 1));
                     } );
 
-            List<Lemma> lemmaSaved = lemmaRepository.findByLemmaAndSiteIdInOrderByFrequency(
+            List<Lemma> lemmaSaved = lemmaRepository.findAllBySiteIdAndLemmaInOrderByFrequency(
                     site.getId(), lemmasRaw.keySet()
             );
             for (Lemma lemma : lemmaSaved) {

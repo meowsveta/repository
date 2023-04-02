@@ -18,7 +18,7 @@ public interface LemmaRepository extends CrudRepository<Lemma, Long> {
 
     List<Lemma> findAllBySiteIdAndLemmaInOrderByFrequency(Long siteId, Collection<String> lemmas);
 
-    List<Lemma> findByLemmaInOrderByFrequency(Collection<String> lemmas);
+    List<Lemma> findByLemmaOrderByFrequency(String lemma);
 
     @Query(
         value = "SELECT COUNT(*) FROM lemma WHERE site_id = :siteId",

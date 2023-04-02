@@ -42,7 +42,7 @@ public class SearchServiceImpl implements SearchService {
         HashMap<String, Integer> sourceLemmas = LemmaUtils.lemmatization(query, false);
         List<Lemma> existLemmas =
             site == null ?
-                lemmaRepository.findByLemmaInOrderByFrequency(sourceLemmas.keySet()) :
+                lemmaRepository.findByLemmaOrderByFrequency(sourceLemmas.keySet().toString()) :
                 lemmaRepository.findAllBySiteIdAndLemmaInOrderByFrequency(site.getId(), sourceLemmas.keySet());
         List<Page> matchPages = searchPages(existLemmas);
         if (matchPages.isEmpty()) {

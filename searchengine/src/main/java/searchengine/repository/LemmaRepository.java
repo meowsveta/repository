@@ -15,6 +15,13 @@ import java.util.List;
 @Transactional
 public interface LemmaRepository extends CrudRepository<Lemma, Long> {
 
+    @Query(
+            value = "SELECT l FROM Lemma l " +
+                    "WHERE l.site.id = :siteId AND l.lemma IN (:lemmas) " +
+                    "ORDER BY l.frequency"
+    )
+    List<Lemma> getByLemma(Long siteId, Collection<String> lemmas);
+
 
     List<Lemma> findAllBySiteIdAndLemmaInOrderByFrequency(Long siteId, Collection<String> lemmas);
 

@@ -43,7 +43,7 @@ public class SearchServiceImpl implements SearchService {
         List<Lemma> existLemmas =
             site == null ?
                 lemmaRepository.findByLemmaOrderByFrequency(sourceLemmas.keySet().toString()) :
-                lemmaRepository.findAllBySiteIdAndLemmaInOrderByFrequency(site.getId(), sourceLemmas.keySet());
+                lemmaRepository.getByLemma(site.getId(), sourceLemmas.keySet());
         List<Page> matchPages = searchPages(existLemmas);
         if (matchPages.isEmpty()) {
             return response;

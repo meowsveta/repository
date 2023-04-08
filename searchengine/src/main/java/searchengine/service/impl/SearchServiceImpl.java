@@ -142,7 +142,6 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     public double searchRelevance(List<Page> pages, List<Lemma> existLemmas) {
-//        List<SearchResult> result = new ArrayList<>();
         List<Long> pageIds = getIds(pages);
         int totalRelevance = indexRepository.totalRelevance(pageIds);
         double relevance = 0;

@@ -22,9 +22,6 @@ public interface LemmaRepository extends CrudRepository<Lemma, Long> {
     )
     List<Lemma> getByLemma(Long siteId, Collection<String> lemmas);
 
-
-    List<Lemma> findAllBySiteIdAndLemmaInOrderByFrequency(Long siteId, Collection<String> lemmas);
-
     List<Lemma> findByLemmaOrderByFrequency(String lemma);
 
     @Query(

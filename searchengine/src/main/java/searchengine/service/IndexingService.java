@@ -13,8 +13,5 @@ public interface IndexingService {
 
      void stopIndexing();
      void indexPage(String url);
-//     List<Site> getSites();
-
-//    void checkSiteConfig(Site site);
 
 }

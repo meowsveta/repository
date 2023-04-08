@@ -47,6 +47,4 @@ public class SnippetUtils {
         }
         return joiner.toString();
     }
-
-
 }

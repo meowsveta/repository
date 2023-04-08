@@ -173,12 +173,9 @@ public class PageRecursiveTask extends RecursiveTask<Boolean> {
             if (lemmasRaw.isEmpty()) {
                 return;
             }
-            List<Lemma> lemmas = new ArrayList<>();
-            List<Index> indices = new ArrayList<>();
             lemmasRaw.forEach(
                     (lemma, count) -> {
                         lemmaRepository.insertLemma(site.getId(), lemma, count);
-                        lemmas.add(new Lemma(site, lemma, 1));
                     } );
 
             List<Lemma> lemmaSaved = lemmaRepository.getByLemma(
@@ -190,9 +187,7 @@ public class PageRecursiveTask extends RecursiveTask<Boolean> {
                 if (count == null) {
                     continue;
                 }
-                indices.add(
-                        new Index(page, lemma, count)
-                );
+                indexRepository.insertIndex(lemma.getId(), page.getId(), count);
             }
         } catch (Exception ex) {
             throw new ErrorMessage("Ошибка лемматизации");

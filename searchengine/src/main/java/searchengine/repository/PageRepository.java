@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import searchengine.model.Page;
+import searchengine.model.Site;
 
 import java.util.List;
 
@@ -13,18 +14,9 @@ import java.util.List;
 @Transactional
 public interface PageRepository extends JpaRepository<Page, Long> {
 
-    @Query(
-        value = "SELECT s.id FROM page p " +
-            "WHERE p.path = :path AND site_id = :siteId",
-        nativeQuery = true
-    )
-    Long getIdByPath(String path, Long siteId);
+    Long findIdByPathAndSite(String path, Site site);
 
-    @Query(
-        value = "SELECT p FROM Page p " +
-            "WHERE p.path = :path AND site.id = :siteId"
-    )
-    Page getByPath(String path, Long siteId);
+    Page findByPathAndSite(String path, Site site);
 
     @Query(
         value = "SELECT p FROM Page p " +
@@ -40,11 +32,8 @@ public interface PageRepository extends JpaRepository<Page, Long> {
     )
     List<Page> getByLemma(Long lemmaId, List<Long> pageIds);
 
-    @Query(
-        value = "SELECT COUNT(*) FROM page WHERE site_id = :siteId",
-        nativeQuery = true
-    )
-    long countBy(Long siteId);
+//
+    long countBySite(Site site);
 
     @Modifying
     @Query(
@@ -73,9 +62,5 @@ public interface PageRepository extends JpaRepository<Page, Long> {
     int update(int code, String content, Long siteId, String path);
 
     @Modifying
-    @Query(
-        value = "DELETE FROM page WHERE site_id = :siteId",
-        nativeQuery = true
-    )
-    void deleteBySiteId(Long siteId);
+    void deleteBySite(Site site);
 }

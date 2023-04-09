@@ -7,6 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import searchengine.model.Lemma;
+import searchengine.model.Site;
 
 import java.util.Collection;
 import java.util.List;
@@ -24,11 +25,7 @@ public interface LemmaRepository extends CrudRepository<Lemma, Long> {
 
     List<Lemma> findByLemmaOrderByFrequency(String lemma);
 
-    @Query(
-        value = "SELECT COUNT(*) FROM lemma WHERE site_id = :siteId",
-        nativeQuery = true
-    )
-    long countBy(Long siteId);
+    long countBySite(Site site);
 
     @Modifying
     @Query(
@@ -41,7 +38,7 @@ public interface LemmaRepository extends CrudRepository<Lemma, Long> {
     void updateByPage(Long pageId);
 
     @Modifying
-    void deleteBySiteId(Long siteId);
+    void deleteBySite(Site site);
 
     @Modifying
     @Query(value = "INSERT INTO lemma (site_id, lemma, frequency) " +

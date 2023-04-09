@@ -6,6 +6,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.beans.factory.annotation.Autowired;
 import searchengine.model.*;
 import searchengine.error.ErrorMessage;
 import searchengine.repository.*;
@@ -66,7 +67,7 @@ public class PageRecursiveTask extends RecursiveTask<Boolean> {
             }
             update(formatUrl, document, response);
             parseChildren(document);
-            Page page = pageRepository.getByPath(formatUrl, site.getId());
+            Page page = pageRepository.findByPathAndSite(formatUrl, site);
             if (page == null) {
                 throw new ErrorMessage("Страница не найдена");
             }
@@ -117,7 +118,7 @@ public class PageRecursiveTask extends RecursiveTask<Boolean> {
                 }
                 if (runIndexing) {
                     PageRecursiveTask task = new PageRecursiveTask(
-                            site, absUrl, siteRepository,
+                            site,  absUrl, siteRepository,
                             pageRepository, lemmaRepository,
                             indexRepository,
                             false, firstUrl
@@ -156,10 +157,10 @@ public class PageRecursiveTask extends RecursiveTask<Boolean> {
     }
 
     private void removePage(String url) {
-        Long pageId = pageRepository.getIdByPath(url, site.getId());
+        Long pageId = pageRepository.findIdByPathAndSite(url, site);
         if (pageId != null) {
             lemmaRepository.updateByPage(pageId);
-            indexRepository.deleteByPageId(pageId);
+            indexRepository.deleteByPage(pageId);
             pageRepository.deleteById(pageId);
         }
     }

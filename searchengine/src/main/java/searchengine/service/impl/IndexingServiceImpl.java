@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import searchengine.config.Site;
 import searchengine.config.SitesList;
+import searchengine.model.Page;
 import searchengine.model.Status;
 import searchengine.error.ErrorMessage;
 import searchengine.repository.*;
@@ -55,7 +56,7 @@ public class IndexingServiceImpl implements IndexingService {
     public void parsePages(Site siteConfig) {
         searchengine.model.Site site = updateSite(siteConfig, true);
         PageRecursiveTask task = new PageRecursiveTask(
-            site, siteConfig.getUrl(),
+            site,  siteConfig.getUrl(),
             siteRepository, pageRepository,
             lemmaRepository, indexRepository);
         tasks.add(task);
@@ -70,7 +71,7 @@ public class IndexingServiceImpl implements IndexingService {
     @Override
     public searchengine.model.Site updateSite(Site siteConfig, boolean delete) {
         String url = siteConfig.getUrl();
-        searchengine.model.Site site = siteRepository.getByUrl(url);
+        searchengine.model.Site site = siteRepository.findByUrl(url);
         if (site == null) {
             site = new searchengine.model.Site(
                 siteConfig.getUrl(), siteConfig.getName(),
@@ -79,8 +80,8 @@ public class IndexingServiceImpl implements IndexingService {
             return siteRepository.saveAndFlush(site);
         } else if (delete) {
             indexRepository.deleteBySiteId(site.getId());
-            lemmaRepository.deleteBySiteId(site.getId());
-            pageRepository.deleteBySiteId(site.getId());
+            lemmaRepository.deleteBySite(site);
+            pageRepository.deleteBySite(site);
             site.setName(siteConfig.getName())
                 .setStatus(Status.INDEXING)
                 .setStatusTime(LocalDateTime.now())

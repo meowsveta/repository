@@ -34,8 +34,8 @@ public class StatisticsServiceImpl implements StatisticsService {
 
         List<DetailedStatisticsItem> detailed = new ArrayList<>();
         for (Site site : sites) {
-            long pageCountBy = pageRepository.countBy(site.getId());
-            long lemmaCountBy = lemmaRepository.countBy(site.getId());
+            long pageCountBy = pageRepository.countBySite(site);
+            long lemmaCountBy = lemmaRepository.countBySite(site);
             total.setPages(total.getPages() + pageCountBy)
                 .setLemmas(total.getLemmas() + lemmaCountBy);
             if (!total.isIndexing() && site.getStatus() == Status.INDEXING) {

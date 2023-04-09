@@ -13,16 +13,7 @@ import java.time.LocalDateTime;
 @Transactional
 public interface SiteRepository extends JpaRepository<Site, Long> {
 
-    @Query(
-        value = "SELECT id FROM site WHERE url = :url",
-        nativeQuery = true
-    )
-    Long getIdByUrl(String url);
-
-    @Query(
-        value = "SELECT s FROM Site s WHERE s.url = :url"
-    )
-    Site getByUrl(String url);
+    Site findByUrl(String url);
 
     @Modifying
     @Query(
@@ -55,8 +46,6 @@ public interface SiteRepository extends JpaRepository<Site, Long> {
     )
     void updateStatusTime(LocalDateTime dateTime, Long id);
 
-
-
     @Modifying
     @Query(
         value = "UPDATE site SET last_error = :error WHERE id = :id",
@@ -65,9 +54,5 @@ public interface SiteRepository extends JpaRepository<Site, Long> {
     void updateLastError(String error, Long id);
 
     @Modifying
-    @Query(
-        value = "DELETE FROM site WHERE url = :url",
-        nativeQuery = true
-    )
     void deleteByUrl(String url);
 }

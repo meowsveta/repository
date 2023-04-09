@@ -27,11 +27,7 @@ public interface IndexRepository extends JpaRepository<Index, Long> {
     int totalRelevance(List<Long> pageIds);
 
     @Modifying
-    @Query(
-        value = "DELETE FROM `index` WHERE page_id = :pageId",
-        nativeQuery = true
-    )
-    void deleteByPageId(Long pageId);
+    void deleteByPage(Long page);
 
     @Modifying
     @Query(

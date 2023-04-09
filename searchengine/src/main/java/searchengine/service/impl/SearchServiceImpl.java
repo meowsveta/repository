@@ -62,7 +62,7 @@ public class SearchServiceImpl implements SearchService {
         if (url != null && !url.isBlank()) {
             url = url.endsWith("/") ?
                 url.substring(0, url.length() - 1) : url;
-            site = siteRepository.getByUrl(url.trim());
+            site = siteRepository.findByUrl(url.trim());
             if (site == null) {
                 throw new ErrorMessage("Сайт не найден");
             }
